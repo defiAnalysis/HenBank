@@ -1,0 +1,1224 @@
+{
+	"compiler": {
+		"version": "0.6.12+commit.27d51765"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "lockId",
+						"type": "uint256"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "referrals",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "token",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "profit",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "create",
+						"type": "uint256"
+					}
+				],
+				"name": "Award",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "lockId",
+						"type": "uint256"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "token",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "day",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "create",
+						"type": "uint256"
+					}
+				],
+				"name": "Lock",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "lockId",
+						"type": "uint256"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "token",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "profit",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "token2",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "profit2",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "create",
+						"type": "uint256"
+					}
+				],
+				"name": "Mining",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "referrer",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "create",
+						"type": "uint256"
+					}
+				],
+				"name": "Referrer",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "token",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "profit",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "token2",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "profit2",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "create",
+						"type": "uint256"
+					}
+				],
+				"name": "TotalMining",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "lockId",
+						"type": "uint256"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "token",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "create",
+						"type": "uint256"
+					}
+				],
+				"name": "Unlock",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "token",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "create",
+						"type": "uint256"
+					}
+				],
+				"name": "Withdraw",
+				"type": "event"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_token",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_amount",
+						"type": "uint256"
+					}
+				],
+				"name": "adminLoan",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_token",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_amount",
+						"type": "uint256"
+					}
+				],
+				"name": "adminRefund",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_token",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_index",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_day",
+						"type": "uint256"
+					}
+				],
+				"name": "changeHistoryCreate",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "dayRate",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address[]",
+						"name": "_tokens",
+						"type": "address[]"
+					}
+				],
+				"name": "disableTokens",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address[]",
+						"name": "_tokens",
+						"type": "address[]"
+					}
+				],
+				"name": "enableTokens",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_token",
+						"type": "address"
+					}
+				],
+				"name": "getAccount",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "uint256",
+								"name": "lock",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "profit",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "balance",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "giveTotal",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "todayProfit",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "yield",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct HenBase.Account",
+						"name": "",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_token",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_address",
+						"type": "address"
+					}
+				],
+				"name": "getAccountByAddress",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "uint256",
+								"name": "lock",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "profit",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "balance",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "giveTotal",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "todayProfit",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "yield",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct HenBase.Account",
+						"name": "",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_token",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_address",
+						"type": "address"
+					}
+				],
+				"name": "getBalance",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "uint256",
+								"name": "lock",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "profit",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "balance",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "giveTotal",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "todayProfit",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "yield",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct HenBase.Account",
+						"name": "",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_token",
+						"type": "address"
+					}
+				],
+				"name": "getBank",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "uint256",
+								"name": "lock",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "profit",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "giveProfit",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "todayProfit",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "yield",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct HenBase.Bank",
+						"name": "",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_token",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_address",
+						"type": "address"
+					}
+				],
+				"name": "getLockBalance",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_token",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_index",
+						"type": "uint256"
+					}
+				],
+				"name": "getLockHistory",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "address",
+								"name": "account",
+								"type": "address"
+							},
+							{
+								"internalType": "uint256",
+								"name": "id",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "day",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "balance",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "profit",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "giveProfit",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "create",
+								"type": "uint256"
+							},
+							{
+								"internalType": "bool",
+								"name": "end",
+								"type": "bool"
+							}
+						],
+						"internalType": "struct HenBase.LockHistory",
+						"name": "",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_day",
+						"type": "uint256"
+					}
+				],
+				"name": "getRate",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getSetting",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "uint256",
+								"name": "rateDecimal",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "dayRate",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "yearRate",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "giveRate",
+								"type": "uint256"
+							},
+							{
+								"internalType": "address",
+								"name": "giveToken",
+								"type": "address"
+							},
+							{
+								"internalType": "uint256",
+								"name": "referrerRate",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct HenBase.Setting",
+						"name": "",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "giveRate",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "giveToken",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_dayRate",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_yearRate",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "_giveToken",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_giveRate",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_referrerRate",
+						"type": "uint256"
+					}
+				],
+				"name": "initialize",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "lockHistories",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "id",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "day",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "balance",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "profit",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "giveProfit",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "create",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "end",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_token",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_day",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_amount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "_referrer",
+						"type": "address"
+					}
+				],
+				"name": "lockToken",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_token",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_givePrice",
+						"type": "uint256"
+					}
+				],
+				"name": "mining",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address[]",
+						"name": "_tokens",
+						"type": "address[]"
+					},
+					{
+						"internalType": "uint256[]",
+						"name": "_givePrices",
+						"type": "uint256[]"
+					}
+				],
+				"name": "minings",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "owner",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "rateDecimal",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "referrerRate",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "referrers",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_day",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_year",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "_giveToken",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_give",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_referrer",
+						"type": "uint256"
+					}
+				],
+				"name": "setSetting",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "tokensEnable",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_token",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_address",
+						"type": "address"
+					}
+				],
+				"name": "totalTodayProfitYield",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "newOwner",
+						"type": "address"
+					}
+				],
+				"name": "transferOwnership",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_token",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_lockId",
+						"type": "uint256"
+					}
+				],
+				"name": "unlock",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_token",
+						"type": "address"
+					}
+				],
+				"name": "withdrawToken",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "yearRate",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {
+				"transferOwnership(address)": {
+					"params": {
+						"newOwner": "address 新的管理员帐户地址"
+					}
+				}
+			},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {
+				"transferOwnership(address)": {
+					"notice": "合约的所有者指派一个新的管理员"
+				}
+			},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"Hen/Hen.sol": "Hen"
+		},
+		"evmVersion": "istanbul",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"Hen/Admin.sol": {
+			"keccak256": "0x7f35f9530da7eb934caafccdb248b62a6f7b2110f5a41200fe4f1a18b6d036d2",
+			"license": "GPL-3.0",
+			"urls": [
+				"bzz-raw://7d5efea51f3d6e83981e1a10b0da12291cd492e200735b3b27c4f77a9e96d12c",
+				"dweb:/ipfs/QmVg6aAsJX4BygVbSJ5dZUVbcsTrTvBuKFyAg5WVR8ikJR"
+			]
+		},
+		"Hen/Base.sol": {
+			"keccak256": "0x143bfaa6c82bb461c4360941865a7346931fa81dcd2427db08fe2078f739f5b5",
+			"license": "GPL-3.0",
+			"urls": [
+				"bzz-raw://73002d035bff3a9cc82c1f8dc35cc4e47848ab116368c06ab0937f68dd7a6f58",
+				"dweb:/ipfs/QmdMz9f15HbabQc23DCnej53wkVkWEKXH8tTPMZvXy6gFY"
+			]
+		},
+		"Hen/Controller.sol": {
+			"keccak256": "0x3b1cd481a81c25ec73a677f1e026fec665e8d964023683f7db07676b8b85749c",
+			"license": "GPL-3.0",
+			"urls": [
+				"bzz-raw://06cdccc65d99f545aa0546dd1004afb9e36400447b048a068ba2c766313a9788",
+				"dweb:/ipfs/QmaoxVQC8By5bsM516i66JMQJkMRG8QUNLzGUjBAHX2nwL"
+			]
+		},
+		"Hen/Hen.sol": {
+			"keccak256": "0x533e51cc1f580fcb3d0fbee6cfac0fbb9ae44244a7922488e5b57fe428de20f2",
+			"license": "GPL-3.0",
+			"urls": [
+				"bzz-raw://a4c752d1f0653d4dff003dde0b21e048b55598e24839f9cf1487a72c2ce79cca",
+				"dweb:/ipfs/QmUpHktoY2VWPCqLKfTtsu1BKpyv1wHot7HubLRYZZ3KYz"
+			]
+		},
+		"hardhat/console.sol": {
+			"keccak256": "0x72b6a1d297cd3b033d7c2e4a7e7864934bb767db6453623f1c3082c6534547f4",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://a8cb8681076e765c214e0d51cac989325f6b98e315eaae06ee0cbd5a9f084763",
+				"dweb:/ipfs/QmNWGHi4zmjxQTYN3NMGnJd49jBT5dE4bxTdWEaDuJrC6N"
+			]
+		},
+		"interface/IERC20.sol": {
+			"keccak256": "0xbe944fdf98ae375d46cc5636773ddee0687028b6414be8c425d13a3513393d78",
+			"license": "GPL-3.0",
+			"urls": [
+				"bzz-raw://be532e731c040fa05db8979576f118baa3d89ec27efc498e4a29e39efb5e3858",
+				"dweb:/ipfs/QmdNYS1PbhYMEpJeBLCKLwNrgPYwPqRGUU3h7ENozTdDTU"
+			]
+		},
+		"library/Owned.sol": {
+			"keccak256": "0x5c929299b575dd95008cf61d351d762dec604a5212b2a01659445691608f2791",
+			"license": "GPL-3.0",
+			"urls": [
+				"bzz-raw://e018f4c0d73369f9e81128dfba7026a1a3bf03e424f8eea4e5a04d53523f5dc5",
+				"dweb:/ipfs/QmU9fkxGbxQb568ak2Y3ib6eK7J3Eq2ZtLyje6isjysAkK"
+			]
+		},
+		"library/SafeMath.sol": {
+			"keccak256": "0x940f824fe9a5e07723605a2f7bfd6e348408184d91cf602c710ea4dfc1e25381",
+			"license": "GPL-3.0",
+			"urls": [
+				"bzz-raw://1a0f9d2d6e3e5a03e2d33f58db530539c3b15f54aef16e95f34f25008f9de9c7",
+				"dweb:/ipfs/QmVuiAbspGjFMNgr6gfkmRiBiXTXKJWb8kxfkAd1b3YN8y"
+			]
+		},
+		"token/ERC20SafeTransfer.sol": {
+			"keccak256": "0x17c78a3de4c0dc136000a202a23bc4e2bd5f5d35ef941f91540494c48003c516",
+			"license": "GPL-3.0",
+			"urls": [
+				"bzz-raw://0db26c60fb80a87ccc60acf85ab4da32e632fe6271a9396e29490d6ba3888c24",
+				"dweb:/ipfs/QmPUL8gmxsrB1LMtw9Qqr2JLX18LFQFxofSCFQK4ykDBnU"
+			]
+		}
+	},
+	"version": 1
+}
