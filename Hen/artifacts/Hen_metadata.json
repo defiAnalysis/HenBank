@@ -1133,7 +1133,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"Hen/Hen.sol": "Hen"
+			"hen/Hen.sol": "Hen"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -1147,7 +1147,15 @@
 		"remappings": []
 	},
 	"sources": {
-		"Hen/Admin.sol": {
+		"hardhat/console.sol": {
+			"keccak256": "0x72b6a1d297cd3b033d7c2e4a7e7864934bb767db6453623f1c3082c6534547f4",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://a8cb8681076e765c214e0d51cac989325f6b98e315eaae06ee0cbd5a9f084763",
+				"dweb:/ipfs/QmNWGHi4zmjxQTYN3NMGnJd49jBT5dE4bxTdWEaDuJrC6N"
+			]
+		},
+		"hen/Admin.sol": {
 			"keccak256": "0x7f35f9530da7eb934caafccdb248b62a6f7b2110f5a41200fe4f1a18b6d036d2",
 			"license": "GPL-3.0",
 			"urls": [
@@ -1155,7 +1163,7 @@
 				"dweb:/ipfs/QmVg6aAsJX4BygVbSJ5dZUVbcsTrTvBuKFyAg5WVR8ikJR"
 			]
 		},
-		"Hen/Base.sol": {
+		"hen/Base.sol": {
 			"keccak256": "0x143bfaa6c82bb461c4360941865a7346931fa81dcd2427db08fe2078f739f5b5",
 			"license": "GPL-3.0",
 			"urls": [
@@ -1163,7 +1171,7 @@
 				"dweb:/ipfs/QmdMz9f15HbabQc23DCnej53wkVkWEKXH8tTPMZvXy6gFY"
 			]
 		},
-		"Hen/Controller.sol": {
+		"hen/Controller.sol": {
 			"keccak256": "0x3b1cd481a81c25ec73a677f1e026fec665e8d964023683f7db07676b8b85749c",
 			"license": "GPL-3.0",
 			"urls": [
@@ -1171,20 +1179,12 @@
 				"dweb:/ipfs/QmaoxVQC8By5bsM516i66JMQJkMRG8QUNLzGUjBAHX2nwL"
 			]
 		},
-		"Hen/Hen.sol": {
+		"hen/Hen.sol": {
 			"keccak256": "0x533e51cc1f580fcb3d0fbee6cfac0fbb9ae44244a7922488e5b57fe428de20f2",
 			"license": "GPL-3.0",
 			"urls": [
 				"bzz-raw://a4c752d1f0653d4dff003dde0b21e048b55598e24839f9cf1487a72c2ce79cca",
 				"dweb:/ipfs/QmUpHktoY2VWPCqLKfTtsu1BKpyv1wHot7HubLRYZZ3KYz"
-			]
-		},
-		"hardhat/console.sol": {
-			"keccak256": "0x72b6a1d297cd3b033d7c2e4a7e7864934bb767db6453623f1c3082c6534547f4",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://a8cb8681076e765c214e0d51cac989325f6b98e315eaae06ee0cbd5a9f084763",
-				"dweb:/ipfs/QmNWGHi4zmjxQTYN3NMGnJd49jBT5dE4bxTdWEaDuJrC6N"
 			]
 		},
 		"interface/IERC20.sol": {

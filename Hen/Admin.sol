@@ -13,20 +13,20 @@ contract HenAdmin is Owned, ERC20SafeTransfer, HenController {
     //管理部分
     //---------------------------
     //开启支持的token
-    function enableTokens(address[] calldata _tokens) external onlyOwner {
-        //传递过来的开启
-        for (uint256 i = 0; i < _tokens.length; i++) {
-            tokensEnable[_tokens[i]] = true;
-        }
-    }
+    // function enableTokens(address[] calldata _tokens) external onlyOwner {
+    //     //传递过来的开启
+    //     for (uint256 i = 0; i < _tokens.length; i++) {
+    //         tokensEnable[_tokens[i]] = true;
+    //     }
+    // }
 
     //禁止token
-    function disableTokens(address[] calldata _tokens) external onlyOwner {
-        //传递过来的开启
-        for (uint256 i = 0; i < _tokens.length; i++) {
-            tokensEnable[_tokens[i]] = false;
-        }
-    }
+    // function disableTokens(address[] calldata _tokens) external onlyOwner {
+    //     //传递过来的开启
+    //     for (uint256 i = 0; i < _tokens.length; i++) {
+    //         tokensEnable[_tokens[i]] = false;
+    //     }
+    // }
 
     function miningRate(
         address _token,
@@ -68,41 +68,44 @@ contract HenAdmin is Owned, ERC20SafeTransfer, HenController {
         //先分在解锁
         for (uint256 i = 0; i < lockHistories[_token].length; i++) {
             LockHistory memory _history = lockHistories[_token][i];
-            if (!_history.end) {
-                (uint256 _rateProfit, uint256 _giveProfit, uint256 _referrerProfit) = miningRate(_token, _history.day, _history.balance, giveToken, _givePrice);
-                address _address = _history.account;
-                Account storage _account = accounts[_token][_address];
-                //挖矿收益
-                if (_rateProfit > 0) {
-                    //更新统计
-                    _account.profit = _account.profit.add(_rateProfit);
-                    //加到可用
-                    _account.balance = _account.balance.add(_rateProfit);
-                    //更新收益
-                    lockHistories[_token][i].profit = lockHistories[_token][i].profit.add(_rateProfit);
-                    _totalProfit = _totalProfit.add(_rateProfit);
-                    console.log("give %s %d", giveToken, _giveProfit);
-                }
-                //赠送收益
-                if (_giveProfit > 0 && giveToken != address(0)) {
-                    //更新记录
-                    lockHistories[_token][i].giveProfit = lockHistories[_token][i].giveProfit.add(_giveProfit);
-                    //加到赠送
-                    _account.giveTotal = _account.giveTotal.add(_giveProfit);
-                    accounts[giveToken][_address].balance = accounts[giveToken][_address].balance.add(_giveProfit);
-                    _giveTotalProfit = _giveTotalProfit.add(_giveProfit);
-                    console.log("mining %s %d", _address, _rateProfit);
-                }
-                //推荐
-                address _referrer = referrers[_address];
-                if (_referrerProfit > 0 && _referrer != address(0)) {
-                    //加到奖励
-                    accounts[giveToken][_referrer].balance = accounts[giveToken][_referrer].balance.add(_referrerProfit);
-                    emit Award(_history.id, _referrer, _address, giveToken, _referrerProfit, block.timestamp);
-                    console.log("award %s %s %d", _referrer, _address, _referrerProfit);
-                }
-                emit Mining(_history.id, _token, _address, _rateProfit, giveToken, _giveProfit, block.timestamp);
+            //结束了就不处理
+            if (_history.end) {
+                continue;
             }
+
+            (uint256 _rateProfit, uint256 _giveProfit, uint256 _referrerProfit) = miningRate(_token, _history.day, _history.balance, giveToken, _givePrice);
+            address _address = _history.account;
+            Account storage _account = accounts[_token][_address];
+            //挖矿收益
+            if (_rateProfit > 0) {
+                //更新统计
+                _account.profit = _account.profit.add(_rateProfit);
+                //加到可用
+                _account.balance = _account.balance.add(_rateProfit);
+                //更新收益
+                lockHistories[_token][i].profit = lockHistories[_token][i].profit.add(_rateProfit);
+                _totalProfit = _totalProfit.add(_rateProfit);
+                console.log("give %s %d", giveToken, _giveProfit);
+            }
+            //赠送收益
+            if (_giveProfit > 0 && giveToken != address(0)) {
+                //更新记录
+                lockHistories[_token][i].giveProfit = lockHistories[_token][i].giveProfit.add(_giveProfit);
+                //加到赠送
+                _account.giveTotal = _account.giveTotal.add(_giveProfit);
+                accounts[giveToken][_address].balance = accounts[giveToken][_address].balance.add(_giveProfit);
+                _giveTotalProfit = _giveTotalProfit.add(_giveProfit);
+                console.log("mining %s %d", _address, _rateProfit);
+            }
+            //推荐
+            address _referrer = referrers[_address];
+            if (_referrerProfit > 0 && _referrer != address(0)) {
+                //加到奖励
+                accounts[giveToken][_referrer].balance = accounts[giveToken][_referrer].balance.add(_referrerProfit);
+                emit Award(_history.id, _referrer, _address, giveToken, _referrerProfit, block.timestamp);
+                console.log("award %s %s %d", _referrer, _address, _referrerProfit);
+            }
+            emit Mining(_history.id, _token, _address, _rateProfit, giveToken, _giveProfit, block.timestamp);
         }
         //解锁到期的
         for (uint256 i = 0; i < lockHistories[_token].length; i++) {
@@ -126,7 +129,7 @@ contract HenAdmin is Owned, ERC20SafeTransfer, HenController {
         }
     }
 
-    //多挖
+    //多个同时进行
     function minings(address[] memory _tokens, uint256[] memory _givePrices) public onlyOwner {
         require(_tokens.length == _givePrices.length, "Parameter error");
         for (uint256 _i = 0; _i < _tokens.length; _i++) {
@@ -135,12 +138,13 @@ contract HenAdmin is Owned, ERC20SafeTransfer, HenController {
     }
 
     //测试
-    function changeHistoryCreate(
+    //改变参与时间
+    function testChangeHistoryCreate(
         address _token,
         uint256 _index,
         uint256 _day
     ) external onlyOwner {
-        lockHistories[_token][_index].create -= _day;
+        lockHistories[_token][_index].create = lockHistories[_token][_index].create.sub(_day);
     }
 
     //设置收益比例

@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.6.0;
 
-import "./token/ERC20.sol";
-import "./token/ERC20Detailed.sol";
+import "./ERC20.sol";
+import "./ERC20Detailed.sol";
 
 /**
  * @title SimpleToken

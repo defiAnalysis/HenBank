@@ -207,6 +207,9 @@ contract HenController is HenBase, ERC20SafeTransfer {
         uint256 _n;
         for (uint256 i = 0; i < lockHistories[_token].length; i++) {
             LockHistory memory _history = lockHistories[_token][i];
+            if (_history.end) {
+                continue;
+            }
             uint256 _profit;
             uint256 _rate = getRate(_history.day);
             //如果地址不为0
@@ -238,6 +241,7 @@ contract HenController is HenBase, ERC20SafeTransfer {
     ) internal view returns (uint256) {
         uint256 _fromDecimal = IERC20(_from).decimals();
         uint256 _toDecimal = IERC20(_to).decimals();
+        //如果获取不到合约的精度，
         if (_fromDecimal > _toDecimal) {
             //from大于to，需要除以多出的位数
             uint256 _less = _fromDecimal.sub(_toDecimal);
@@ -261,7 +265,12 @@ contract HenController is HenBase, ERC20SafeTransfer {
     //增加推荐关系
     function addReferrer(address _address, address _referrer) internal {
         //推荐人上级不能为当前用户
-        if (_address == address(0) || _referrer == address(0) || _address == _referrer || referrers[_address] != address(0) || referrers[_referrer] == _address) {
+        if (
+            _address == address(0) || _referrer == address(0)  //地址不能为空
+            || _address == _referrer    //地址不能相同
+            || referrers[_address] != address(0) //还没推荐关系
+            || referrers[_referrer] == _address //上级推荐人不能是自己
+            ) {
             return;
         }
         referrers[_address] = _referrer;

@@ -34,7 +34,7 @@ contract HenBase {
     // mapping(address => uint256) internal giveBalances;
 
     // Supports token or not
-    mapping(address => bool) public tokensEnable;
+    // mapping(address => bool) public tokensEnable;
     //存款统计
     struct Bank {
         uint256 lock; //锁仓总资金
