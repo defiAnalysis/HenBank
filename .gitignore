@@ -1,0 +1,14 @@
+node_modules
+
+#Buidler files
+cache
+artifacts
+
+node_modules
+
+#Hardhat files
+cache
+artifacts
+full
+
+.deps
