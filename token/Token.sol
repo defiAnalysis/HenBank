@@ -20,6 +20,6 @@ contract Token is ERC20, ERC20Detailed {
         uint8 _decimals,
         uint256 _totalSupply
     ) public ERC20Detailed(_name, _symbol, _decimals) {
-        _mint(msg.sender, _totalSupply * (10**uint256(decimals())));
+        _mint(msg.sender, _totalSupply * (10**uint256(_decimals)));
     }
 }

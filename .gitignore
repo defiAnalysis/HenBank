@@ -12,3 +12,4 @@ artifacts
 full
 
 .deps
+.DS_Store

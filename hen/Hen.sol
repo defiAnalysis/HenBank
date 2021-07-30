@@ -11,8 +11,7 @@ contract Hen is HenAdmin {
         require(!initialized, "Contract instance has already been initialized");
         initialized = true;
         __Owned_init();
-        console.log("giveToken %s", _giveToken);
-
+        
         dayRate = _dayRate;
         yearRate = _yearRate;
         giveRate = _giveRate;
