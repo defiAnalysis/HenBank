@@ -4,10 +4,9 @@ pragma experimental ABIEncoderV2;
 
 import "../library/SafeMath.sol";
 import "../library/Owned.sol";
-import "../token/ERC20SafeTransfer.sol";
 import "./Controller.sol";
 
-contract HenAdmin is Owned, ERC20SafeTransfer, HenController {
+contract HenAdmin is Owned, HenController {
     using SafeMath for uint256;
 
     //测试
@@ -39,17 +38,6 @@ contract HenAdmin is Owned, ERC20SafeTransfer, HenController {
         if (_referrer != referrerRate) {
             referrerRate = _referrer;
         }
-    }
-
-    //提出代币
-    function adminLoan(address _token, uint256 _amount) external onlyOwner {
-        require(doTransferOut(_token, msg.sender, _amount), "Not sufficient funds");
-    }
-
-    //充值代币
-    function adminRefund(address _token, uint256 _amount) external onlyOwner {
-        require(doTransferFrom(_token, msg.sender, address(this), _amount), "Not sufficient funds");
-        // console.log("refund %s %d", _token, _amount);
     }
 
     //更新币价

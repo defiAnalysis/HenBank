@@ -3,11 +3,12 @@ pragma solidity ^0.6.0;
 pragma experimental ABIEncoderV2;
 
 import "../library/SafeMath.sol";
-import "../token/ERC20SafeTransfer.sol";
+import "../interface/IERC20.sol";
+import "../interface/Vault.sol";
 import "hardhat/console.sol";
 import "./Base.sol";
 
-contract HenController is HenBase, ERC20SafeTransfer {
+contract HenController is HenBase {
     using SafeMath for uint256;
 
     //平台
@@ -43,7 +44,7 @@ contract HenController is HenBase, ERC20SafeTransfer {
         _account.todayProfit = totalInfo.todayProfit;
         _account.yield = totalInfo.yield;
         //可用，已分配+待提取=总可用
-        _account.balance = _account.balance.add(totalInfo.totalProfit);
+        _account.balance = IVault(vault).balance(_token, _address).add(totalInfo.totalProfit);
         //已分配利润+待提取=总利润
         _account.profit = _account.profit.add(totalInfo.totalProfit);
         //赠送利润+待分配赠送利润=总赠送利润
@@ -94,7 +95,8 @@ contract HenController is HenBase, ERC20SafeTransfer {
         //更新可用
         if (_totalProfit > 0) {
             //加到用户可用
-            accounts[_token][msg.sender].balance = accounts[_token][msg.sender].balance.add(_totalProfit);
+            // accounts[_token][msg.sender].balance = accounts[_token][msg.sender].balance.add(_totalProfit);
+            IVault(vault).add(_token, msg.sender, _totalProfit);
             //更新用户利润
             accounts[_token][msg.sender].profit = accounts[_token][msg.sender].profit.add(_totalProfit);
             //更新该token，代币总利润
@@ -103,7 +105,8 @@ contract HenController is HenBase, ERC20SafeTransfer {
         //更新赠送
         if (_giveProfit > 0) {
             //加到用户可用
-            accounts[giveToken][msg.sender].balance = accounts[giveToken][msg.sender].balance.add(_giveProfit);
+            // accounts[giveToken][msg.sender].balance = accounts[giveToken][msg.sender].balance.add(_giveProfit);
+            IVault(vault).add(giveToken, msg.sender, _giveProfit);
             //更新用户赠送平台币统计
             accounts[giveToken][msg.sender].giveProfit = accounts[giveToken][msg.sender].giveProfit.add(_giveProfit);
 
@@ -114,7 +117,8 @@ contract HenController is HenBase, ERC20SafeTransfer {
         if (_referrerProfit > 0) {
             address _referrer = referrers[msg.sender];
             //加到推荐用户可用
-            accounts[giveToken][_referrer].balance = accounts[giveToken][_referrer].balance.add(_referrerProfit);
+            // accounts[giveToken][_referrer].balance = accounts[giveToken][_referrer].balance.add(_referrerProfit);
+            IVault(vault).add(giveToken, _referrer, _referrerProfit);
             //更新用户推荐收益统计
             accounts[giveToken][_referrer].referrerProfit = accounts[giveToken][_referrer].referrerProfit.add(_referrerProfit);
             //推荐奖励统计
@@ -127,14 +131,14 @@ contract HenController is HenBase, ERC20SafeTransfer {
     //提现代币
     function withdrawToken(address _token) external updateBalance(_token) {
         require(_token != address(0), "Address is error");
-        Account storage _account = accounts[_token][msg.sender];
+        // Account storage _account = accounts[_token][msg.sender];
         //获取余额
-        uint256 _balance = _account.balance;
+        // uint256 _balance = _account.balance;
+        uint256 _balance = IVault(vault).balance(_token, msg.sender);
         //清空可用余额
         if (_balance > 0) {
-            accounts[_token][msg.sender].balance = 0;
-            require(doTransferOut(_token, msg.sender, _balance), "Not sufficient funds");
-            // console.log("withdrawToken %s %d", _token, _balance);
+            // accounts[_token][msg.sender].balance = 0;
+            IVault(vault).withdraw(_token, msg.sender, _balance);
             emit Withdraw(_token, msg.sender, _balance, block.timestamp);
         }
     }
@@ -147,7 +151,7 @@ contract HenController is HenBase, ERC20SafeTransfer {
         address _referrer
     ) public {
         require(_token != address(0), "Address is error");
-        require(doTransferFrom(_token, msg.sender, address(this), _amount), "Not sufficient funds");
+        IVault(vault).deposit(_token, msg.sender, _amount);
         //增加推荐
         addReferrer(msg.sender, _referrer);
 
@@ -188,7 +192,8 @@ contract HenController is HenBase, ERC20SafeTransfer {
         //锁仓减少
         accounts[_token][_history.account].lock = accounts[_token][_history.account].lock.sub(_lockBalance);
         //加到可用
-        accounts[_token][_history.account].balance = accounts[_token][_history.account].balance.add(_lockBalance);
+        // accounts[_token][_history.account].balance = accounts[_token][_history.account].balance.add(_lockBalance);
+        IVault(vault).unlock(_token, _history.account, _lockBalance);
 
         //设置订单状态
         lockHistories[_index].end = true;
