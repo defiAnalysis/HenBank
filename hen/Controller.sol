@@ -155,7 +155,7 @@ contract HenController is HenBase {
         //增加推荐
         addReferrer(msg.sender, _referrer);
 
-        uint256 _id = newLockId();
+        uint256 _id = lockHistories.length;
         LockHistory memory lock = LockHistory({token: _token, account: msg.sender, id: _id, day: _day, balance: _amount, profit: 0, giveProfit: 0, create: block.timestamp, update: block.timestamp, end: false});
         lockHistories.push(lock);
         console.log("lock", _token, _day, _amount);
@@ -167,14 +167,7 @@ contract HenController is HenBase {
     }
 
     //解冻用户资金
-    function unlock(address _token, uint256 _lockId) public {
-        uint256 _index;
-        for (uint256 _i = 0; _i < lockHistories.length; _i++) {
-            if (lockHistories[_i].id == _lockId) {
-                _index = _i;
-                break;
-            }
-        }
+    function unlock(address _token, uint256 _index) public {
         require(lockHistories[_index].account == msg.sender, "Permission denied");
         return unlockToken(_token, _index);
     }
@@ -320,12 +313,6 @@ contract HenController is HenBase {
             //精度相同不转换
             return _amount;
         }
-    }
-
-    //获取ID
-    function newLockId() internal returns (uint256) {
-        lockId++;
-        return lockId;
     }
 
     //增加推荐关系

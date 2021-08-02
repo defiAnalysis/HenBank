@@ -6,9 +6,6 @@ contract HenBase {
     //金库地址
     address vault;
 
-    //锁ID
-    uint256 lockId;
-
     //锁仓记录
     struct LockHistory {
         address token; //token
@@ -68,8 +65,8 @@ contract HenBase {
     //分配比例，精度8位
     uint256 public constant rateDecimal = 8;
     //1天有多少秒，用来计算天数
-    uint256 constant daySecond = 60 * 60 * 24;
-    // uint256 constant daySecond = 60 * 10;
+    // uint256 constant daySecond = 60 * 60 * 24;
+    uint256 constant daySecond = 60 * 10;
     //日化0.03%
     uint256 public dayRate;
     //年化0.1%

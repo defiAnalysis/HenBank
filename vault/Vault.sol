@@ -40,6 +40,9 @@ contract Vault is Owned, ERC20SafeTransfer {
     function balance(address _token, address _account) external view returns (uint256) {
         return balances[_token][_account];
     }
+    function lockBalance(address _token, address _account) external view returns (uint256) {
+        return locks[_token][_account];
+    }
 
     //增加资金
     function add(
@@ -144,6 +147,8 @@ contract Vault is Owned, ERC20SafeTransfer {
     function setFactory(address _account) external onlyManger {
         factory = _account;
     }
+
+    //-----------------------------------------
 
     bool private initialized;
 
