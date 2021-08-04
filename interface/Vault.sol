@@ -4,13 +4,7 @@ pragma solidity ^0.6.0;
 interface IVault {
     function balance(address _token, address _account) external view returns (uint256);
 
-    function add(
-        address _token,
-        address _account,
-        uint256 _amount
-    ) external;
-
-    function sub(
+    function addProfit(
         address _token,
         address _account,
         uint256 _amount

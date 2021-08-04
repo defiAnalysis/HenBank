@@ -12,18 +12,26 @@ contract Vault is Owned, ERC20SafeTransfer {
 
     //资金池
     mapping(address => uint256) pools;
+    //收益池
+    mapping(address => uint256) profitPools;
     //用户资金表
     mapping(address => mapping(address => uint256)) balances;
     //用户锁仓资金表
     mapping(address => mapping(address => uint256)) locks;
     //借款资金表
-    mapping(address => mapping(address => uint256)) loans;
-    //支持token
+    mapping(address => uint256) loans;
 
     //工厂合约地址
     address public factory;
     //管理合约地址
     address public manger;
+
+    //借出事件
+    event Lend(address token, address account, uint256 amount, uint256 create);
+    //还款事件
+    event Borrow(address token, address account, uint256 amount, uint256 create);
+    //收益事件
+    event Profit(address token, address account, uint256 amount, uint256 create);
 
     //只有工厂地址可以充取
     modifier onlyFactory() {
@@ -40,34 +48,25 @@ contract Vault is Owned, ERC20SafeTransfer {
     function balance(address _token, address _account) external view returns (uint256) {
         return balances[_token][_account];
     }
+
     function lockBalance(address _token, address _account) external view returns (uint256) {
         return locks[_token][_account];
     }
 
-    //增加资金
-    function add(
+    //增加收益
+    function addProfit(
         address _token,
         address _account,
         uint256 _amount
     ) public onlyFactory {
+        //收益从收益池里取
+        require(profitPools[_token] >= _amount, "Pool not enough");
+        //从收益池扣除
+        profitPools[_token] = profitPools[_token].sub(_amount);
         //加到资金池
         pools[_token] = pools[_token].add(_amount);
         //加到用户资金表
         balances[_token][_account] = balances[_token][_account].add(_amount);
-    }
-
-    //减少资金
-    function sub(
-        address _token,
-        address _account,
-        uint256 _amount
-    ) public onlyFactory {
-        require(pools[_token] >= _amount, "Pool not enough");
-        require(balances[_token][_account] >= _amount, "Not sufficient funds");
-        //从资金池扣除
-        pools[_token] = pools[_token].sub(_amount);
-        //扣除用户资金表
-        balances[_token][_account] = balances[_token][_account].sub(_amount);
     }
 
     //存入
@@ -102,7 +101,12 @@ contract Vault is Owned, ERC20SafeTransfer {
         address _account,
         uint256 _amount
     ) external onlyFactory {
-        sub(_token, _account, _amount);
+        require(pools[_token] >= _amount, "Pool not enough");
+        require(balances[_token][_account] >= _amount, "Not sufficient funds");
+        //扣除资金池
+        pools[_token] = pools[_token].sub(_amount);
+        //扣除用户资金表
+        balances[_token][_account] = balances[_token][_account].sub(_amount);
         require(doTransferOut(_token, _account, _amount), "Not sufficient funds");
     }
 
@@ -118,8 +122,9 @@ contract Vault is Owned, ERC20SafeTransfer {
         //从资金池扣除
         pools[_token] = pools[_token].sub(_amount);
         //增加借出
-        loans[_token][manger] = loans[_token][manger].add(_amount);
+        loans[_token] = loans[_token].add(_amount);
         require(doTransferOut(_token, manger, _amount), "Not sufficient funds");
+        emit Lend(_token, manger, _amount, block.timestamp);
     }
 
     //借入，还款
@@ -128,14 +133,16 @@ contract Vault is Owned, ERC20SafeTransfer {
         //加到资金池
         pools[_token] = pools[_token].add(_amount);
         //减少借出
-        loans[_token][manger] = loans[_token][manger].sub(_amount);
+        loans[_token] = loans[_token].sub(_amount);
+        emit Borrow(_token, msg.sender, _amount, block.timestamp);
     }
 
     //存收益到资金池
     function depositPool(address _token, uint256 _amount) external onlyManger {
         require(doTransferFrom(_token, msg.sender, address(this), _amount), "Not sufficient funds");
-        //加到资金池
-        pools[_token] = pools[_token].add(_amount);
+        //加到收益池
+        profitPools[_token] = profitPools[_token].add(_amount);
+        emit Profit(_token, msg.sender, _amount, block.timestamp);
     }
 
     //设置管理者

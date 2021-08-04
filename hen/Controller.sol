@@ -96,7 +96,7 @@ contract HenController is HenBase {
         if (_totalProfit > 0) {
             //加到用户可用
             // accounts[_token][msg.sender].balance = accounts[_token][msg.sender].balance.add(_totalProfit);
-            IVault(vault).add(_token, msg.sender, _totalProfit);
+            IVault(vault).addProfit(_token, msg.sender, _totalProfit);
             //更新用户利润
             accounts[_token][msg.sender].profit = accounts[_token][msg.sender].profit.add(_totalProfit);
             //更新该token，代币总利润
@@ -106,7 +106,7 @@ contract HenController is HenBase {
         if (_giveProfit > 0) {
             //加到用户可用
             // accounts[giveToken][msg.sender].balance = accounts[giveToken][msg.sender].balance.add(_giveProfit);
-            IVault(vault).add(giveToken, msg.sender, _giveProfit);
+            IVault(vault).addProfit(giveToken, msg.sender, _giveProfit);
             //更新用户赠送平台币统计
             accounts[giveToken][msg.sender].giveProfit = accounts[giveToken][msg.sender].giveProfit.add(_giveProfit);
 
@@ -118,7 +118,7 @@ contract HenController is HenBase {
             address _referrer = referrers[msg.sender];
             //加到推荐用户可用
             // accounts[giveToken][_referrer].balance = accounts[giveToken][_referrer].balance.add(_referrerProfit);
-            IVault(vault).add(giveToken, _referrer, _referrerProfit);
+            IVault(vault).addProfit(giveToken, _referrer, _referrerProfit);
             //更新用户推荐收益统计
             accounts[giveToken][_referrer].referrerProfit = accounts[giveToken][_referrer].referrerProfit.add(_referrerProfit);
             //推荐奖励统计
@@ -131,13 +131,9 @@ contract HenController is HenBase {
     //提现代币
     function withdrawToken(address _token) external updateBalance(_token) {
         require(_token != address(0), "Address is error");
-        // Account storage _account = accounts[_token][msg.sender];
-        //获取余额
-        // uint256 _balance = _account.balance;
         uint256 _balance = IVault(vault).balance(_token, msg.sender);
         //清空可用余额
         if (_balance > 0) {
-            // accounts[_token][msg.sender].balance = 0;
             IVault(vault).withdraw(_token, msg.sender, _balance);
             emit Withdraw(_token, msg.sender, _balance, block.timestamp);
         }

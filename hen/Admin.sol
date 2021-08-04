@@ -9,12 +9,6 @@ import "./Controller.sol";
 contract HenAdmin is Owned, HenController {
     using SafeMath for uint256;
 
-    //测试
-    //改变参与时间
-    function testChangeHistoryTime(uint256 _index, uint256 _day) external onlyOwner {
-        lockHistories[_index].update = lockHistories[_index].update.sub(_day);
-    }
-
     //设置收益比例
     function adminSetSetting(
         uint256 _day,
