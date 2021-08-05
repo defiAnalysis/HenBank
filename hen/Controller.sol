@@ -139,6 +139,16 @@ contract HenController is HenBase {
         }
     }
 
+    //检查是否在白名单
+    function isWhiteList(address _account) public view returns (bool) {
+        return whiteList[_account];
+    }
+
+    //同意风险，加入白名单
+    function agreeRisk() external {
+        whiteList[msg.sender] = true;
+    }
+
     //锁定用户资金
     function lockToken(
         address _token,
@@ -146,6 +156,8 @@ contract HenController is HenBase {
         uint256 _amount,
         address _referrer
     ) public {
+        //验证是否在白名单
+        require(whiteList[msg.sender], "Please agree to");
         require(_token != address(0), "Address is error");
         IVault(vault).deposit(_token, msg.sender, _amount);
         //增加推荐
@@ -154,7 +166,7 @@ contract HenController is HenBase {
         uint256 _id = lockHistories.length;
         LockHistory memory lock = LockHistory({token: _token, account: msg.sender, id: _id, day: _day, balance: _amount, profit: 0, giveProfit: 0, create: block.timestamp, update: block.timestamp, end: false});
         lockHistories.push(lock);
-        console.log("lock", _token, _day, _amount);
+        // console.log("lock", _token, _day, _amount);
         //加到锁定
         accounts[_token][msg.sender].lock = accounts[_token][msg.sender].lock.add(_amount);
         //增加矿机总资金

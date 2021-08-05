@@ -3,6 +3,8 @@ pragma solidity ^0.6.0;
 pragma experimental ABIEncoderV2;
 
 contract HenBase {
+    //白名单
+    mapping(address => bool) whiteList;
     //金库地址
     address vault;
 
@@ -32,16 +34,6 @@ contract HenBase {
         uint256 yield; //年化率
     }
     mapping(address => mapping(address => Account)) internal accounts;
-    //帐户统计信息
-    // struct AccountInfo {
-    //     uint256 lock; //锁仓
-    //     uint256 profit; //收益
-    //     uint256 balance; //可用余额
-    //     uint256 giveProfit; //平台币收益
-    //     uint256 todayProfit; //今日收益
-    //     uint256 referrerProfit; //推荐收益
-    //     uint256 yield; //年化率
-    // }
 
     //存款统计
     struct Bank {

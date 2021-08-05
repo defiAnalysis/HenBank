@@ -137,7 +137,7 @@ contract Vault is Owned, ERC20SafeTransfer {
         emit Borrow(_token, msg.sender, _amount, block.timestamp);
     }
 
-    //存收益到资金池
+    //存收益到收益池
     function depositPool(address _token, uint256 _amount) external onlyManger {
         require(doTransferFrom(_token, msg.sender, address(this), _amount), "Not sufficient funds");
         //加到收益池
