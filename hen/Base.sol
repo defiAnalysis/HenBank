@@ -10,8 +10,8 @@ contract HenBase {
 
     //锁仓记录
     struct LockHistory {
-        address token; //token
-        address account; //帐户地址
+        // address token; //token
+        address account; //用户地址
         uint256 id; //锁仓ID
         uint256 day; //天数 0为活期 >0为死期
         uint256 balance; //金额
@@ -21,7 +21,12 @@ contract HenBase {
         bool end; //是否结束
         uint256 update; //最后更新时间(提取后会更新)
     }
-    LockHistory[] public lockHistories;
+    //token对应的所有锁仓记录
+    mapping(address => LockHistory[]) public lockHistories;
+    //token对应的运行中的记录索引
+    mapping(address => uint256[]) public runLockHistories;
+    //用户对应的运行中的记录索引
+    mapping(address => mapping(address => uint256[])) public runUserLockHistories;
 
     //用户收益统计，记录用户锁仓资金、收益、利润
     struct Account {

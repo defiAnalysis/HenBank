@@ -15,7 +15,7 @@ contract Hen is HenAdmin {
         uint256 _referrerRate,
         address _vault
     ) public {
-        require(!initialized, "Contract instance has already been initialized");
+        require(!initialized, "Already been initialized");
         initialized = true;
         __Owned_init();
 

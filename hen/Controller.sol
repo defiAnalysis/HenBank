@@ -33,11 +33,7 @@ contract HenController is HenBase {
 
     //用户部分
     //---------------------------
-    function getAccount(address _token) public view returns (Account memory) {
-        return getAccountByAddress(_token, msg.sender);
-    }
-
-    function getAccountByAddress(address _token, address _address) public view returns (Account memory) {
+    function getAccount(address _token, address _address) public view returns (Account memory) {
         //今日收益
         TotalInfo memory totalInfo = totalLockHistory(_token, _address);
         Account memory _account = accounts[_token][_address];
@@ -55,20 +51,23 @@ contract HenController is HenBase {
     //提取利润，通过锁仓记录里的update时间，计算可以得到的利润
     //1.将利润加到accounts[用户地址].balance的可用里
     //2.更新update时间
-    modifier updateBalance(address _token) {
+    modifier updateBalance(address _token, address _account) {
         //待领取收益
         uint256 _totalProfit;
         //赠送代币
         uint256 _giveProfit;
         //推荐奖励
         uint256 _referrerProfit;
-        for (uint256 i = 0; i < lockHistories.length; i++) {
-            LockHistory storage _history = lockHistories[i];
-            if (_history.end || _history.token != _token) {
+        for (uint256 _i = 0; _i < runUserLockHistories[_token][_account].length; _i++) {
+            //获取索引
+            uint256 _index = runUserLockHistories[_token][_account][_i];
+            //通过索引获取记录
+            LockHistory storage _history = lockHistories[_token][_index];
+            if (_history.end) {
                 continue;
             }
             //如果为用户地址
-            if (_history.account == msg.sender) {
+            if (_history.account == _account) {
                 //算出进行了几天，运行天数*每天的利润=待提取的利润
                 uint256 _day = block.timestamp.sub(_history.update).div(daySecond);
                 if (_day > 0) {
@@ -95,17 +94,15 @@ contract HenController is HenBase {
         //更新可用
         if (_totalProfit > 0) {
             //加到用户可用
-            // accounts[_token][msg.sender].balance = accounts[_token][msg.sender].balance.add(_totalProfit);
-            IVault(vault).addProfit(_token, msg.sender, _totalProfit);
+            IVault(vault).addProfit(_token, _account, _totalProfit);
             //更新用户利润
-            accounts[_token][msg.sender].profit = accounts[_token][msg.sender].profit.add(_totalProfit);
+            accounts[_token][_account].profit = accounts[_token][_account].profit.add(_totalProfit);
             //更新该token，代币总利润
             banks[_token].profit = banks[_token].profit.add(_totalProfit);
         }
         //更新赠送
         if (_giveProfit > 0) {
             //加到用户可用
-            // accounts[giveToken][msg.sender].balance = accounts[giveToken][msg.sender].balance.add(_giveProfit);
             IVault(vault).addProfit(giveToken, msg.sender, _giveProfit);
             //更新用户赠送平台币统计
             accounts[giveToken][msg.sender].giveProfit = accounts[giveToken][msg.sender].giveProfit.add(_giveProfit);
@@ -117,7 +114,6 @@ contract HenController is HenBase {
         if (_referrerProfit > 0) {
             address _referrer = referrers[msg.sender];
             //加到推荐用户可用
-            // accounts[giveToken][_referrer].balance = accounts[giveToken][_referrer].balance.add(_referrerProfit);
             IVault(vault).addProfit(giveToken, _referrer, _referrerProfit);
             //更新用户推荐收益统计
             accounts[giveToken][_referrer].referrerProfit = accounts[giveToken][_referrer].referrerProfit.add(_referrerProfit);
@@ -129,7 +125,7 @@ contract HenController is HenBase {
     }
 
     //提现代币
-    function withdrawToken(address _token) external updateBalance(_token) {
+    function withdrawToken(address _token) external updateBalance(_token, msg.sender) {
         require(_token != address(0), "Address is error");
         uint256 _balance = IVault(vault).balance(_token, msg.sender);
         //清空可用余额
@@ -137,11 +133,6 @@ contract HenController is HenBase {
             IVault(vault).withdraw(_token, msg.sender, _balance);
             emit Withdraw(_token, msg.sender, _balance, block.timestamp);
         }
-    }
-
-    //检查是否在白名单
-    function isWhiteList(address _account) public view returns (bool) {
-        return whiteList[_account];
     }
 
     //同意风险，加入白名单
@@ -163,65 +154,55 @@ contract HenController is HenBase {
         //增加推荐
         addReferrer(msg.sender, _referrer);
 
-        uint256 _id = lockHistories.length;
-        LockHistory memory lock = LockHistory({token: _token, account: msg.sender, id: _id, day: _day, balance: _amount, profit: 0, giveProfit: 0, create: block.timestamp, update: block.timestamp, end: false});
-        lockHistories.push(lock);
+        uint256 _id = lockHistories[_token].length;
+        LockHistory memory lock = LockHistory({account: msg.sender, id: _id, day: _day, balance: _amount, profit: 0, giveProfit: 0, create: block.timestamp, update: block.timestamp, end: false});
+        lockHistories[_token].push(lock);
         // console.log("lock", _token, _day, _amount);
         //加到锁定
         accounts[_token][msg.sender].lock = accounts[_token][msg.sender].lock.add(_amount);
+        //填加索引记录
+        addHistoryIndex(_token, msg.sender, _id);
+
         //增加矿机总资金
         banks[_token].lock = banks[_token].lock.add(_amount);
         emit Lock(_id, _token, msg.sender, _amount, _day, block.timestamp);
     }
 
     //解冻用户资金
-    function unlock(address _token, uint256 _index) public {
-        require(lockHistories[_index].account == msg.sender, "Permission denied");
-        return unlockToken(_token, _index);
-    }
-
-    function unlockToken(address _token, uint256 _index) internal updateBalance(_token) {
-        require(_token != address(0), "Address is error");
-        LockHistory memory _history = lockHistories[_index];
+    function unlock(address _token, uint256 _index) public updateBalance(_token, msg.sender) {
+        LockHistory storage _history = lockHistories[_token][_index];
+        require(_history.account == msg.sender, "Permission denied");
         require(!_history.end, "Order closed");
         //检查是否到解冻天数
         require(block.timestamp >= _history.create + _history.day * 1 days, "It's not time to unlock");
 
         //冻结的数量
         uint256 _lockBalance = _history.balance;
-
         //锁仓减少
         accounts[_token][_history.account].lock = accounts[_token][_history.account].lock.sub(_lockBalance);
         //加到可用
-        // accounts[_token][_history.account].balance = accounts[_token][_history.account].balance.add(_lockBalance);
         IVault(vault).unlock(_token, _history.account, _lockBalance);
 
         //设置订单状态
-        lockHistories[_index].end = true;
+        _history.end = true;
         //减少矿机总资金
         banks[_token].lock = banks[_token].lock.sub(_lockBalance);
+        //删除索引记录
+        delHistoryIndex(_token, _history.account, _index);
 
         emit Unlock(_history.id, _token, _history.account, _lockBalance, block.timestamp);
-        console.log("unlock", _history.id, _token, _lockBalance);
-    }
-
-    //获取余额
-    function getBalance(address _token, address _address) public view returns (Account memory) {
-        Account memory _account = accounts[_token][_address];
-        return _account;
+        // console.log("unlock", _history.id, _token, _lockBalance);
     }
 
     //获取利润比例
     function getDayRate(uint256 _day) public view returns (uint256) {
         if (_day == 0) {
             _day = 1;
-        }
-        if (_day <= 0) {
-            return 0;
+        } else if (_day > 365) {
+            _day = 365;
         }
         uint256 _rate = yearRate.sub(dayRate).div(365 - 1);
-        uint256 n = dayRate.add(_day.sub(1).mul(_rate));
-        return n;
+        return dayRate.add(_day.sub(1).mul(_rate));
     }
 
     //通过价格, 获取兑换比例
@@ -238,9 +219,8 @@ contract HenController is HenBase {
     function miningRate(address _token, LockHistory memory _history) internal view returns (AwardInfo memory) {
         uint256 _giveProfit;
         uint256 _referrerProfit;
-        uint256 _profit;
         uint256 _rate = getDayRate(_history.day);
-        _profit = _history.balance.mul(_rate).div(10**rateDecimal);
+        uint256 _profit = _history.balance.mul(_rate).div(10**rateDecimal);
 
         uint256 _givePrice = getPriceRate(_token, giveToken);
 
@@ -270,10 +250,19 @@ contract HenController is HenBase {
         uint256 _totalProfit; //待提取总收益
         uint256 _giveTotalProfit; //赠送币收益
 
-        for (uint256 i = 0; i < lockHistories.length; i++) {
-            LockHistory memory _history = lockHistories[i];
+        uint256[] memory _historyList;
+        //如果是查全部
+        if (_address == address(0)) {
+            _historyList = runLockHistories[_token];
+        } else {
+            //如果是查用户
+            _historyList = runUserLockHistories[_token][_address];
+        }
+        for (uint256 _i = 0; _i < _historyList.length; _i++) {
+            uint256 _index = _historyList[_i];
+            LockHistory memory _history = lockHistories[_token][_index];
             //检查是否结束\检查token
-            if (_history.end || (_token != address(0) && _history.token != _token)) {
+            if (_history.end) {
                 continue;
             }
             //如果查找地址为0或为用户地址
@@ -336,12 +325,44 @@ contract HenController is HenBase {
             return;
         }
         referrers[_address] = _referrer;
-        console.log("referrer from %s to %s", _referrer, _address);
+        // console.log("referrer from %s to %s", _referrer, _address);
         emit Referrer(_address, _referrer, block.timestamp);
     }
 
     //获取推荐收益
     function getReferrerAward(address _referrer, address _account) external view returns (uint256) {
         return referrerAwards[_referrer][_account];
+    }
+
+    //增加锁仓索引
+    function addHistoryIndex(
+        address _token,
+        address _account,
+        uint256 _id
+    ) private {
+        runLockHistories[_token].push(_id);
+        runUserLockHistories[_token][_account].push(_id);
+    }
+
+    //删除锁仓索引
+    function delHistoryIndex(
+        address _token,
+        address _account,
+        uint256 _id
+    ) private {
+        // console.log(runLockHistories[_token].length, runUserLockHistories[_token][_account].length);
+        for (uint256 _i = 0; _i < runLockHistories[_token].length; _i++) {
+            if (runLockHistories[_token][_i] == _id) {
+                runLockHistories[_token][_i] = runLockHistories[_token][runLockHistories[_token].length - 1];
+                runLockHistories[_token].pop();
+            }
+        }
+        for (uint256 _i = 0; _i < runUserLockHistories[_token][_account].length; _i++) {
+            if (runUserLockHistories[_token][_account][_i] == _id) {
+                runUserLockHistories[_token][_account][_i] = runUserLockHistories[_token][_account][runUserLockHistories[_token][_account].length - 1];
+                runUserLockHistories[_token][_account].pop();
+            }
+        }
+        // console.log(runLockHistories[_token][1], runUserLockHistories[_token][_account].length);
     }
 }
