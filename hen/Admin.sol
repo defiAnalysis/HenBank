@@ -6,8 +6,6 @@ import "../library/Owned.sol";
 import "./Controller.sol";
 
 contract HenAdmin is Owned, HenController {
-    using SafeMath for uint256;
-
     //设置收益比例
     function adminSetSetting(
         uint256 _day,

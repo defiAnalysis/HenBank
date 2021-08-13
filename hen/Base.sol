@@ -4,7 +4,7 @@ pragma experimental ABIEncoderV2;
 
 contract HenBase {
     //白名单
-    mapping(address => bool) whiteList;
+    mapping(address => bool) public whiteList;
     //金库地址
     address vault;
 
@@ -62,8 +62,8 @@ contract HenBase {
     //分配比例，精度8位
     uint256 public constant rateDecimal = 8;
     //1天有多少秒，用来计算天数
-    // uint256 constant daySecond = 60 * 60 * 24;
-    uint256 constant daySecond = 60 * 10;
+    uint256 constant daySecond = 60 * 60 * 24;
+    // uint256 constant daySecond = 60 * 10;
     //日化0.03%
     uint256 public dayRate;
     //年化0.1%

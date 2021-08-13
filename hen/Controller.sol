@@ -5,7 +5,7 @@ pragma experimental ABIEncoderV2;
 import "../library/SafeMath.sol";
 import "../interface/IERC20.sol";
 import "../interface/Vault.sol";
-import "hardhat/console.sol";
+// import "hardhat/console.sol";
 import "./Base.sol";
 
 contract HenController is HenBase {
@@ -364,5 +364,24 @@ contract HenController is HenBase {
             }
         }
         // console.log(runLockHistories[_token][1], runUserLockHistories[_token][_account].length);
+    }
+
+    //获取锁仓信息
+    function getLockHistory(address _token, uint256 _index) public view returns (LockHistory memory) {
+        LockHistory memory _history = lockHistories[_token][_index];
+        AwardInfo memory awardInfo = miningRate(_token, _history);
+        uint256 _totalProfit;
+        uint256 _giveTotalProfit;
+        //算出进行了几天，运行天数*每天的利润=待提取的利润
+        uint256 _day = block.timestamp.sub(_history.update).div(daySecond);
+        if (_day > 0) {
+            _totalProfit = awardInfo.profit.mul(_day);
+            if (awardInfo.giveProfit > 0) {
+                _giveTotalProfit = awardInfo.giveProfit.mul(_day);
+            }
+        }
+        _history.profit = _history.profit.add(_totalProfit);
+        _history.giveProfit = _history.giveProfit.add(_giveTotalProfit);
+        return _history;
     }
 }
